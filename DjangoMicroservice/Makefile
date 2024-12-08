@@ -1,4 +1,4 @@
-.PHONY migrations migrate
+.PHONY: migrations migrate
 
 include .env
 
