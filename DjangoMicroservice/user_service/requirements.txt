@@ -7,3 +7,4 @@ python-dotenv
 sqlparse
 djangorestframework
 drf-yasg
+djangorestframework-simplejwt

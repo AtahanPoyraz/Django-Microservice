@@ -4,12 +4,17 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import UserModel
 from .serializers import UserModelSerializer, CreateUserDTO, UpdateUserDTO
+from rest_framework.permissions import IsAuthenticated
+from .permissions import IsSuperUser
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = UserModel.objects.all()
     serializer_class = UserModelSerializer
+    permission_classes = [IsAuthenticated, IsSuperUser]  
 
 class GetUsers(APIView):
+    permission_classes = [IsAuthenticated, IsSuperUser]
+
     def get(self, request, format=None):
         users = UserModel.objects.all()
         serializer = UserModelSerializer(users, many=True)
@@ -24,6 +29,8 @@ class GetUsers(APIView):
         )
 
 class GetUsersById(APIView):
+    permission_classes = [IsAuthenticated, IsSuperUser]
+    
     def get(self, request, user_id, format=None):
         try:
             user = UserModel.objects.get(pk=user_id)
@@ -47,6 +54,8 @@ class GetUsersById(APIView):
             )
         
 class CreateUser(APIView):
+    permission_classes = [IsAuthenticated, IsSuperUser]
+    
     @swagger_auto_schema(
         request_body=CreateUserDTO,
         responses={
@@ -83,6 +92,8 @@ class CreateUser(APIView):
         )
 
 class UpdateUserById(APIView):
+    permission_classes = [IsAuthenticated, IsSuperUser]
+
     @swagger_auto_schema(
         request_body=UpdateUserDTO,
         responses={
@@ -127,6 +138,8 @@ class UpdateUserById(APIView):
             )
 
 class DeleteUserById(APIView):
+    permission_classes = [IsAuthenticated, IsSuperUser]
+    
     def delete(self, request, user_id, format=None):
         try:
             user = UserModel.objects.get(pk=user_id)
