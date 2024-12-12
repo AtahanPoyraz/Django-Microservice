@@ -5,27 +5,27 @@ services:
       context: .
       dockerfile: user_service/Dockerfile
     ports:
-      - "8001:8001"
+      - "${USER_SERVICE_PORT}:${USER_SERVICE_PORT}"
     networks:
       - microservices_network
     depends_on:
-      - user_database
+      - database
     environment:
-      DATABASE_HOST: ${USER_DATABASE_HOST}  
-      DATABASE_USER: ${USER_DATABASE_USER}  
-      DATABASE_PASSWORD: ${USER_DATABASE_PASSWORD}  
-      DATABASE_NAME: ${USER_DATABASE_NAME}  
-      DATABASE_PORT: ${USER_DATABASE_PORT}  
+      DATABASE_HOST: ${DATABASE_HOST}  
+      DATABASE_USER: ${DATABASE_USER}  
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}  
+      DATABASE_NAME: ${DATABASE_NAME}  
+      DATABASE_PORT: ${DATABASE_PORT}  
 
-  user_database:
-    container_name: ${USER_DATABASE_CONTAINER}
+  database:
+    container_name: ${DATABASE_CONTAINER}
     image: postgres:latest
     environment:
-      POSTGRES_USER: ${USER_DATABASE_USER}  
-      POSTGRES_PASSWORD: ${USER_DATABASE_PASSWORD}  
-      POSTGRES_DB: ${USER_DATABASE_NAME}  
+      POSTGRES_USER: ${DATABASE_USER}  
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}  
+      POSTGRES_DB: ${DATABASE_NAME}  
     ports:
-      - "5432:5432"
+      - "${DATABASE_PORT}:${DATABASE_PORT}"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
