@@ -1,0 +1,134 @@
+version: '3.11'
+
+services:
+  postgres:
+    image: postgres:latest  
+    environment:
+      POSTGRES_DB: ${DATABASE_NAME}
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+    volumes:
+      - project-db-data:/var/lib/postgresql/data 
+    restart: always
+    networks:
+      - project-network  
+    ports:
+      - "5432:5432"  
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "${DATABASE_USER}", "-d", "${DATABASE_NAME}"]
+      interval: 30s 
+      retries: 3  
+      timeout: 10s  
+      start_period: 5s  
+
+  redis:
+    image: redis:latest
+    networks:
+      - project-network  
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data  
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    restart: always
+    networks:
+      - project-network
+    ports:
+      - "5672:5672"  
+      - "15672:15672" 
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+
+  user_service:
+    build:
+      context: ./user_service
+      dockerfile: Dockerfile
+    environment:
+      DATABASE_NAME: ${DATABASE_NAME}
+      DATABASE_USER: ${DATABASE_USER}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      DATABASE_HOST: ${DATABASE_HOST}  
+      DATABASE_PORT: ${DATABASE_PORT}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+      API_GATEWAY_INTERNAL_URL: ${API_GATEWAY_INTERNAL_URL}
+      API_GATEWAY_EXTERNAL_URL: ${API_GATEWAY_EXTERNAL_URL}
+    networks:
+      - project-network
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+
+  auth_service:
+    build:
+      context: ./auth_service
+      dockerfile: Dockerfile
+    environment:
+      DATABASE_NAME: ${DATABASE_NAME}
+      DATABASE_USER: ${DATABASE_USER}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      DATABASE_HOST: ${DATABASE_HOST}  
+      DATABASE_PORT: ${DATABASE_PORT}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+      API_GATEWAY_INTERNAL_URL: ${API_GATEWAY_INTERNAL_URL}
+      API_GATEWAY_EXTERNAL_URL: ${API_GATEWAY_EXTERNAL_URL}
+    networks:
+      - project-network
+    ports:
+      - "8001:8001"
+    depends_on:
+      - postgres
+
+  email_service:
+    build:
+      context: ./email_service
+      dockerfile: Dockerfile
+    environment:
+      CELERY_BROKER_URL: pyamqp://${RABBITMQ_USER}:${RABBITMQ_PASSWORD}@rabbitmq:5672//
+      CELERY_RESULT_BACKEND: redis://redis:6379/0
+      SENDGRID_API_KEY: ${SENDGRID_API_KEY}
+      SENDGRID_AUTHORIZED_SENDER: ${SENDGRID_AUTHORIZED_SENDER}
+      API_GATEWAY_INTERNAL_URL: ${API_GATEWAY_INTERNAL_URL}
+      API_GATEWAY_EXTERNAL_URL: ${API_GATEWAY_EXTERNAL_URL}
+    networks:
+      - project-network
+    ports:
+      - "8002:8002"
+    depends_on:
+      - rabbitmq
+      - redis
+
+  api_gateway:
+    build:
+      context: ./api_gateway
+      dockerfile: Dockerfile
+    container_name: api_gateway
+    restart: always
+    volumes:
+      - ./api_gateway/nginx.conf:/etc/nginx/nginx.conf:ro
+    networks:
+      - project-network
+    ports:
+      - "8003:8003"
+    depends_on:
+      - user_service
+      - auth_service
+      - email_service
+
+volumes:
+  project-db-data:
+    driver: local
+  redis-data:
+    driver: local
+  rabbitmq-data:
+    driver: local
+
+networks:
+  project-network: 
+    driver: bridge  

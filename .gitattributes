@@ -1,0 +1,27 @@
+*.pyc filter=python-bytecode
+
+*.py text eol=lf
+
+venv/ export-ignore
+env/  export-ignore
+
+*.py text eol=lf
+*.sh text eol=lf
+
+*.db binary
+*.log binary
+
+*.ipynb text eol=lf
+
+*.md text eol=lf
+
+*.pyo binary
+*.so binary
+
+Dockerfile text eol=lf
+*.yml text eol=lf
+
+*.cover binary
+.tox/ export-ignore
+.nox/ export-ignore
+.hypothesis/ export-ignore
