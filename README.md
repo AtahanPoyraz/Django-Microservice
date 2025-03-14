@@ -66,7 +66,7 @@ cd microservices-project
 #### 2. Set Up Environment Variables
 Before running the project, make sure to set up your environment variables. To do this, create a `.env` file based on the provided `.env.example` file. The `.env.example` file contains the necessary variables required for the project to run.
 
-You can copy the .env.example file and rename it to `.env:`
+You can copy the `.env.example` file and rename it to `.env`:
 ```bash
 cp .env.example .env
 ```
