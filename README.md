@@ -63,21 +63,51 @@ git clone https://github.com/your-username/microservices-project.git
 cd microservices-project
 ```
 
-#### 2. Build Docker Containers
+#### 2. Set Up Environment Variables
+Before running the project, make sure to set up your environment variables. To do this, create a `.env` file based on the provided `.env.example` file. The `.env.example` file contains the necessary variables required for the project to run.
+
+You can copy the .env.example file and rename it to `.env:`
+```bash
+cp .env.example .env
+```
+After that, open the `.env` file and configure the values according to your local setup. Ensure that all the required environment variables are filled in correctly (e.g., database credentials, API keys, etc.).
+
+Here is an example of what your `.env` file should look like:
+```
+DATABASE_NAME=example_db
+DATABASE_USER=example_user
+DATABASE_PASSWORD=example_password
+DATABASE_HOST=postgres
+DATABASE_PORT=5432
+
+RABBITMQ_USER=example_rabbitmq_user
+RABBITMQ_PASSWORD=example_rabbitmq_password
+
+SENDGRID_AUTHORIZED_SENDER=example@example.com
+SENDGRID_API_KEY=SG.exampleApiKey.exampleApiKeyExample
+
+API_GATEWAY_INTERNAL_URL=http://172.23.0.8:8003
+API_GATEWAY_EXTERNAL_URL=http://127.0.0.1:8003
+
+JWT_SECRET_KEY=example_jwt_secret_key_for_demo_purpose_1234567890abcdefg
+```
+Once you've set up the `.env` file, you can proceed with building the Docker containers.
+
+#### 3. Build Docker Containers
 Use Docker Compose to build the required containers for the services. This will create and start all the necessary services (User Service, Auth Service, Email Service, etc.).
 ```bash
 docker-compose up --build
 ```
 This command will download the necessary Docker images and set up the project containers.
 
-#### 3. Database Setup
+#### 4. Database Setup
 If your project includes database migrations (like Django), you'll need to run the database migrations to set up the schema.
 ```bash
 make migrate-all
 ```
 This will apply all migrations to the PostgreSQL database.
 
-#### 4. Running the Application
+#### 5. Running the Application
 After everything is set up and the services are running, you can access the application through the following:
 * API Gateway: The backend API can be accessed via `http://localhost:8003`
 * Email Service: Access the email service at `http://localhost:8002`
@@ -88,14 +118,14 @@ Additionally:
 * **Swagger Documentation**: Each service may have Swagger documentation available for testing APIs. You can access it at `http://localhost:<service-port>/swagger` (replace <service-port> with the appropriate port for each service).
 * **Admin Panel**: The admin panel can be accessed at `http://localhost:<service-port>/admin` (replace <service-port> with the appropriate port for each service) for managing the projec
 
-#### 5. Stopping the Services
+#### 6. Stopping the Services
 To stop all the running services, use the following command:
 ```bash
 docker-compose down
 ```
 This will stop the containers and remove the associated networks.
 
-#### 6. Troubleshooting
+#### 7. Troubleshooting
 * **Port Conflicts**: If the application is not starting because the ports are already in use, you can modify the `docker-compose.yml` file to change the ports for services like Django, NGINX, etc.
 * **Missing Dependencies**: If you encounter issues related to missing dependencies, ensure that all services are properly built by running `docker-compose up --build` again.
 
