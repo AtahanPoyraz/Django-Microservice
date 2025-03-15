@@ -21,8 +21,6 @@ __Below are the key technologies used__:
 
 * `Django REST Framework (DRF)` : Django REST Framework is used to build the RESTful API endpoints for user authentication, registration, and other features. It simplifies the process of creating APIs by providing powerful features such as serialization, viewsets, and authentication mechanisms.
 
-* `JWT Authentication` : JWT (JSON Web Token) is used for authenticating and authorizing users. It allows secure stateless authentication by encoding user credentials in a token that is passed with each request. This is useful for ensuring that users can securely access restricted endpoints without maintaining session state on the server.
-
 * `Celery` : Celery is used for managing asynchronous tasks, such as sending emails and processing background jobs. It integrates seamlessly with Redis as the result backend and RabbitMQ as the broker to manage and execute these tasks.
 
 * `SendGrid API` : SendGrid is integrated for sending transactional emails, such as account registration, password resets, and notifications. It provides a reliable and scalable email delivery service.
