@@ -42,6 +42,7 @@ class SignUpView(CreateAPIView):
                         "subject":"ACCOUNT VERIFICATON"
                         }
                     )
+                
                 if response.status_code == 200:
                     return Response({
                         "status": status.HTTP_201_CREATED,

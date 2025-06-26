@@ -14,10 +14,10 @@ class Command(BaseCommand):
             try:
                 connection = psycopg2.connect(
                     database = os.getenv("DATABASE_NAME"),
-                    user     = os.getenv("DATABASE_USER"),
+                    user = os.getenv("DATABASE_USER"),
                     password = os.getenv("DATABASE_PASSWORD"),
-                    host     = os.getenv("DATABASE_HOST"),
-                    port     = os.getenv("DATABASE_PORT"),
+                    host = os.getenv("DATABASE_HOST"),
+                    port = os.getenv("DATABASE_PORT"),
                 )
 
                 connection.close()

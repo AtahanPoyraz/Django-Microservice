@@ -1,0 +1,25 @@
+[flake8]
+max-line-length = 150
+
+exclude =
+    .git,
+    __pycache__,
+    ./Morphius/utils/__pycache__,
+    ./Morphius/payloads/,
+    ./Morphius/config/__pycache__,
+    ./Morphius/manager/__pycache__,
+    venv/,
+    env/,
+    build/,
+    dist/
+
+ignore =
+    D100, D101, D104,
+    E251,
+    E203, E302, E305, E501,
+    F403,
+    W503, W291,
+
+max-complexity = 10
+
+max-errors = 10
